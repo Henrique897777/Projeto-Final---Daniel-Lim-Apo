@@ -1,0 +1,1 @@
+Ajuda pfvr, não tenho gemini pro :(
