@@ -40,3 +40,11 @@ Siga os passos abaixo para rodar o projeto na sua máquina:
 ```bash
 git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
 cd NOME_DO_REPOSITORIO
+
+2. Instale as dependências:
+Bash
+pip install -r requirements.txt
+
+3. Inicie o servidor web:
+Bash
+python -m uvicorn main:app --reload
