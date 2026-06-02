@@ -5,64 +5,238 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciador de Tarefas</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        h1 { color: #2c3e50; text-align: center; }
-        input[type="text"] { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { background-color: #27ae60; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
-        button:hover { background-color: #2ecc71; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; margin: 0; padding-bottom: 50px; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; }
+        h1 { color: #2c3e50; text-align: center; margin-top: 0; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logout-btn { background-color: #e74c3c; padding: 8px 12px; width: auto; font-size: 14px; margin: 0; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        
+        .dashboard { display: flex; justify-content: space-around; background: #e8f4f8; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-weight: bold; font-size: 14px; }
+        .dash-total { color: #2c3e50; }
+        .dash-concluidas { color: #27ae60; }
+        .dash-pendentes { color: #e74c3c; }
+
+        input[type="text"], input[type="date"], select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-family: inherit;}
+        .row { display: flex; gap: 10px; }
+        .btn-add { background-color: #27ae60; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-bottom: 20px;}
+        .btn-add:hover { background-color: #2ecc71; }
+        
         ul { list-style-type: none; padding: 0; margin-top: 20px; }
-        li { background: #ecf0f1; margin-bottom: 10px; padding: 12px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .delete-btn { background-color: #e74c3c; padding: 6px 10px; font-size: 12px; width: auto; color: white; border: none; border-radius: 3px; cursor: pointer;}
+        li { background: #ecf0f1; margin-bottom: 10px; padding: 12px; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #3498db; }
+        
+        /* Estilo especial para Sub-tarefas */
+        li.sub-tarefa { margin-left: 40px; border-left-color: #9b59b6; background-color: #f9f2fb; }
+        
+        li.expirada { border-left-color: #e74c3c; background-color: #fceceb; }
+        li.concluida { border-left-color: #27ae60; background-color: #eafaf1; opacity: 0.8; }
+        li.concluida strong { text-decoration: line-through; color: #7f8c8d; }
+        
+        .task-info { display: flex; flex-direction: column; width: 75%; }
+        .task-meta { font-size: 12px; color: #7f8c8d; margin-top: 5px; display: flex; gap: 5px; flex-wrap: wrap;}
+        .badge { background: #34495e; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
+        .badge-resp { background: #f39c12; }
+        
+        .actions { display: flex; gap: 5px; flex-direction: column; }
+        .delete-btn { background-color: #e74c3c; padding: 6px; font-size: 11px; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        .done-btn { background-color: #27ae60; padding: 6px; font-size: 11px; color: white; border: none; border-radius: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Minhas Tarefas</h1>
+        <div class="header-bar">
+            <h1>Minhas Tarefas</h1>
+            <button class="logout-btn" onclick="sair()">Sair</button>
+        </div>
+
+        <div class="dashboard">
+            <div class="dash-total">Total: <span id="lbl-total">0</span></div>
+            <div class="dash-concluidas">Concluídas: <span id="lbl-concluidas">0</span></div>
+            <div class="dash-pendentes">Pendentes: <span id="lbl-pendentes">0</span></div>
+        </div>
+        
         <input type="text" id="titulo" placeholder="Título da tarefa">
         <input type="text" id="descricao" placeholder="Descrição da tarefa">
-        <button onclick="criarTarefa()">Adicionar Tarefa</button>
+        
+        <div class="row">
+            <input type="text" id="categoria" placeholder="Categoria (ex: Trabalho)">
+            <input type="date" id="data_entrega" title="Data de Entrega">
+        </div>
+        
+        <div class="row">
+            <select id="responsavel_id" title="Responsável">
+                <option value="">Atribuir para (Eu mesmo)</option>
+            </select>
+            <select id="tarefa_pai_id" title="Vincular a uma Tarefa Principal">
+                <option value="">Tarefa Principal (Nenhuma)</option>
+            </select>
+        </div>
+
+        <button class="btn-add" onclick="criarTarefa()">Adicionar Tarefa</button>
+        
         <ul id="lista-tarefas"></ul>
     </div>
 
     <script>
+        function getHeaders() {
+            const token = localStorage.getItem('token');
+            if (!token) { window.location.href = '/login'; return null; }
+            return { 'Authorization': `Bearer ${token}` };
+        }
+
+        function sair() {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+
+        async function carregarRelatorio() {
+            const headers = getHeaders();
+            if (!headers) return;
+            const res = await fetch('/tarefas/relatorio', { headers });
+            if (res.ok) {
+                const dados = await res.json();
+                document.getElementById('lbl-total').innerText = dados.total;
+                document.getElementById('lbl-concluidas').innerText = dados.concluidas;
+                document.getElementById('lbl-pendentes').innerText = dados.pendentes;
+            }
+        }
+
+        async function carregarUsuarios() {
+            const headers = getHeaders();
+            if (!headers) return;
+            const res = await fetch('/usuarios', { headers });
+            if (res.ok) {
+                const usuarios = await res.json();
+                const select = document.getElementById('responsavel_id');
+                select.innerHTML = '<option value="">Atribuir para (Eu mesmo)</option>';
+                usuarios.forEach(u => {
+                    select.innerHTML += `<option value="${u.id}">${u.username} (${u.perfil})</option>`;
+                });
+            }
+        }
+
         async function carregarTarefas() {
-            const resposta = await fetch('/tarefas');
+            const headers = getHeaders();
+            if (!headers) return;
+
+            const resposta = await fetch('/tarefas', { headers });
+            if (resposta.status === 401) { sair(); return; }
+
             const tarefas = await resposta.json();
             const lista = document.getElementById('lista-tarefas');
+            const selectPai = document.getElementById('tarefa_pai_id');
+            
             lista.innerHTML = '';
+            selectPai.innerHTML = '<option value="">Tarefa Principal (Nenhuma)</option>';
+            
+            const hoje = new Date().toISOString().split('T')[0]; 
+
+            // Popula o menu de tarefas principais e renderiza a lista
             tarefas.forEach(t => {
-                lista.innerHTML += `<li>${t.titulo} <button class="delete-btn" onclick="deletarTarefa(${t.id})">Excluir</button></li>`;
+                // Adiciona ao dropdown de sub-tarefas (apenas se não estiver concluída)
+                if (!t.concluida) {
+                    selectPai.innerHTML += `<option value="${t.id}">${t.titulo}</option>`;
+                }
+
+                let statusClass = t.tarefa_pai_id ? 'sub-tarefa ' : '';
+                let avisoExpirado = '';
+                
+                if (t.concluida) {
+                    statusClass += 'concluida';
+                } else if (t.data_entrega && t.data_entrega < hoje) {
+                    statusClass += 'expirada';
+                    avisoExpirado = '<strong style="color:#e74c3c; font-size: 11px;">(Atrasada!)</strong>';
+                }
+
+                const dataFormatada = t.data_entrega ? new Date(t.data_entrega).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : 'Sem prazo';
+                const categoriaBadge = t.categoria ? `<span class="badge">${t.categoria}</span>` : '';
+                
+                // Exibe de quem é a tarefa pai, se existir
+                const paiNome = t.tarefa_pai_id ? tarefas.find(p => p.id === t.tarefa_pai_id)?.titulo : null;
+                const badgePai = paiNome ? `<span class="badge" style="background:#9b59b6">Sub de: ${paiNome}</span>` : '';
+
+                lista.innerHTML += `
+                    <li class="${statusClass}">
+                        <div class="task-info">
+                            <strong>${t.titulo}</strong>
+                            <span style="font-size: 13px;">${t.descricao}</span>
+                            <div class="task-meta">
+                                ${categoriaBadge} ${badgePai}
+                                <span>📅 ${dataFormatada}</span> ${avisoExpirado}
+                            </div>
+                        </div>
+                        <div class="actions">
+                            ${!t.concluida ? `<button class="done-btn" onclick="concluirTarefa(${t.id})">✔ Concluir</button>` : ''}
+                            <button class="delete-btn" onclick="deletarTarefa(${t.id})">Excluir</button>
+                        </div>
+                    </li>
+                `;
             });
+
+            carregarRelatorio();
         }
 
         async function criarTarefa() {
             const titulo = document.getElementById('titulo').value;
             const descricao = document.getElementById('descricao').value;
+            const categoria = document.getElementById('categoria').value || 'Geral';
+            const data_entrega = document.getElementById('data_entrega').value;
+            const responsavel_id = document.getElementById('responsavel_id').value;
+            const tarefa_pai_id = document.getElementById('tarefa_pai_id').value;
             
-            if(!titulo) return;
+            if(!titulo) { alert("O título é obrigatório!"); return; }
 
-            // Enviando como FormData para ser compatível com Form(...) no FastAPI
+            const headers = getHeaders();
+            if (!headers) return;
+
             const formData = new FormData();
             formData.append('titulo', titulo);
             formData.append('descricao', descricao);
+            formData.append('categoria', categoria);
+            if (data_entrega) formData.append('data_entrega', data_entrega);
+            if (responsavel_id) formData.append('responsavel_id', responsavel_id);
+            if (tarefa_pai_id) formData.append('tarefa_pai_id', tarefa_pai_id);
 
-            await fetch('/tarefas', {
-                method: 'POST',
-                body: formData
-            });
+            const resposta = await fetch('/tarefas', { method: 'POST', headers: headers, body: formData });
 
-            document.getElementById('titulo').value = '';
-            document.getElementById('descricao').value = '';
-            carregarTarefas();
+            if (resposta.ok) {
+                document.getElementById('titulo').value = '';
+                document.getElementById('descricao').value = '';
+                document.getElementById('categoria').value = '';
+                document.getElementById('data_entrega').value = '';
+                document.getElementById('responsavel_id').value = '';
+                document.getElementById('tarefa_pai_id').value = '';
+                carregarTarefas();
+            } else {
+                const erro = await resposta.json();
+                alert(erro.detail || "Erro ao criar tarefa.");
+            }
         }
 
-        // Função para deletar (você precisará adicionar a rota @router.delete("/tarefas/{id}") no seu rotas.py)
+        async function concluirTarefa(id) {
+            const headers = getHeaders();
+            if (!headers) return;
+            const resposta = await fetch(`/tarefas/${id}/concluir`, { method: 'PUT', headers: headers });
+            
+            if (resposta.ok) {
+                carregarTarefas();
+            } else {
+                const erro = await resposta.json();
+                alert(erro.detail || "Erro ao concluir tarefa.");
+            }
+        }
+
         async function deletarTarefa(id) {
-            await fetch(`/tarefas/${id}`, { method: 'DELETE' });
-            carregarTarefas();
+            const headers = getHeaders();
+            if (!headers) return;
+            if (confirm("Tem certeza que deseja excluir esta tarefa?")) {
+                const resposta = await fetch(`/tarefas/${id}`, { method: 'DELETE', headers: headers });
+                if(resposta.ok) { carregarTarefas(); } 
+                else { alert("Você não tem permissão para excluir esta tarefa."); }
+            }
         }
 
+        // Inicialização
+        carregarUsuarios();
         carregarTarefas();
     </script>
 </body>

@@ -1,10 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/tmanagement")
+# URL de conexão oficial do seu banco Supabase
+# Nota: O '@' da senha foi trocado por '%40' para evitar erros de leitura na URL
+DATABASE_URL = "postgresql://postgres:WERNECK123%40@db.zifezehamdnhwohnvtbq.supabase.co:5432/postgres"
 
+# Cria a conexão com o banco em nuvem
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
