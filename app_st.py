@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # URL da sua API FastAPI
-API_URL = "http://localhost:8000"
+API_URL = "https://gerenciador-tarefas-api.onrender.com"
 
 # Configuração da página
 st.set_page_config(page_title="Gerenciador de Tarefas", page_icon="📝", layout="centered")
