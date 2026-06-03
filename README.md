@@ -48,12 +48,12 @@ O sistema foi pensado para ser prático e eficiente, contando com as seguintes f
 - **📚 Documentação Automática:** API totalmente documentada via Swagger e ReDoc.
 - **🛡️ Tratamento de Erros:** Retornos elegantes e claros para exceções e rotas não encontradas.
 - **🧪 Testes Automatizados:** Cobertura de testes garantindo a estabilidade das rotas principais.
->>>>>>> 25927597da58703e98f9cb1be7809f5b64eecf07
+
 
 ---
 
 ## 🛠️ Tecnologias e Armazenamento
-<<<<<<< HEAD
+
 Este projeto foi construído unindo o poder de um backend moderno com um frontend leve e dinâmico:
 * **🐍 Python (FastAPI):** O motor assíncrono da nossa aplicação, garantindo rotas rápidas e validadas.
 * **🌐 HTML / CSS / JS Vanilla:** Interface construída sem frameworks pesados, consumindo a API de forma dinâmica com `fetch`.
@@ -75,7 +75,6 @@ Este projeto foi construído unindo o poder de um backend moderno com um fronten
 ---
 
 ## ⚙️ Como executar o projeto
->>>>>>> 25927597da58703e98f9cb1be7809f5b64eecf07
 
 Siga os passos abaixo para rodar o projeto na sua máquina:
 
@@ -83,7 +82,7 @@ Siga os passos abaixo para rodar o projeto na sua máquina:
 ```bash
 git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
 cd NOME_DO_REPOSITORIO
-<<<<<<< HEAD
+
 
 Instale as dependências:
 Bash
@@ -93,4 +92,4 @@ Inicie o servidor web:
 Bash
 python -m uvicorn main:app --reload
 =======
->>>>>>> 25927597da58703e98f9cb1be7809f5b64eecf07
+
