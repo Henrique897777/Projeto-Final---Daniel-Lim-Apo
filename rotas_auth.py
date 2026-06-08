@@ -13,14 +13,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = "SUPER_SECRETA_MUDAR_EM_PRODUCAO"
 ALGORITHM = "HS256"
 
-# Define onde o FastAPI deve procurar o token
+# ROTADOR QUE FAZ ACOPLAMENTO MAIN,CRIPTOGRAFIA, ADULTERAÇÃO DE TOLKEN ?, ASSINATURA DIGITAL DA API
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 class UserCreate(BaseModel):
     username: str
     password: str
 
-# --- FUNÇÃO NOVA: O PORTEIRO DA API (RF01) ---
+# INJESTOR DE DEPENDECIAS, INTERCEPTADO DE SEGURANÇA, TOLKEN CRIPTOGRAFADO, VERIFICAÇÃO DE USUARIO
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     excecao = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -40,7 +40,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise excecao
     return user
 
-# --- ROTAS EXISTENTES ---
+# ROTAS DE CADRASTRO, ENDPOINT HHTP POST, VERIFICAÇÃO DE USUARIO, CRIPTOGRAFIA DE USUARIO
 @router.post("/registro")
 def registrar(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(Usuario).filter(Usuario.username == user.username).first():
@@ -53,6 +53,7 @@ def registrar(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     return {"status": "usuario criado"}
 
+# AUTENTICAÇÃO DE LOGIN, RECEBE A TENTATIVA DE LOGIN, FAZ VERIFICAÇÃO E COMPARA, ASSINATURA OK ?
 @router.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(Usuario).filter(Usuario.username == form_data.username).first()

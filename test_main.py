@@ -8,7 +8,7 @@ from datetime import date, timedelta
 from main import app
 from database import Base, get_db
 
-# Cria um banco de dados temporário na memória
+# banco de dados local para testes, para nao poluir o supabase
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
 
 engine = create_engine(
@@ -27,7 +27,7 @@ def override_get_db():
         db.close()
 
 app.dependency_overrides[get_db] = override_get_db
-
+#cria tabelas, roda elas e depois faz a exclusao
 client = TestClient(app)
 
 @pytest.fixture(autouse=True)

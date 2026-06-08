@@ -11,7 +11,7 @@ DATABASE_URL = "postgresql://postgres:WERNECK123%40@db.zifezehamdnhwohnvtbq.supa
 engine = create_engine(DATABASE_URL)
  #a conexão em si com o PostgreSQL
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base() s
+Base = declarative_base() 
 
 def get_db():
     db = SessionLocal()
@@ -22,5 +22,3 @@ def get_db():
         #garante que a sessão sempre feche
         db.close()
     #Abre uma sessão
-    
-    

@@ -24,10 +24,9 @@ while retries > 0:
         retries -= 1
         time.sleep(3)
 
-app # instãncia principal da API, todo endpoint é registrado nele # = FastAPI(title="API - Gerenciador de Tarefas com Autenticação")
+app = FastAPI(title="API - Gerenciador de Tarefas com Autenticação")
 templates = Jinja2Templates(directory="templates")
 
-# Rota para a página principal
 @app.get("/", response_class=HTMLResponse)
 def rota_inicial(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
