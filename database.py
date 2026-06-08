@@ -6,7 +6,6 @@ from sqlalchemy.orm import sessionmaker
 # Nota: O '@' da senha foi trocado por '%40' para evitar erros de leitura na URL
 DATABASE_URL = "postgresql://postgres:WERNECK123%40@db.zifezehamdnhwohnvtbq.supabase.co:5432/postgres"
 
-# Cria a conexão com o banco em nuvem
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
