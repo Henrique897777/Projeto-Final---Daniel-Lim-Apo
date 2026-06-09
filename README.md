@@ -74,22 +74,4 @@ Este projeto foi construído unindo o poder de um backend moderno com um fronten
 
 ---
 
-## ⚙️ Como executar o projeto
-
-Siga os passos abaixo para rodar o projeto na sua máquina:
-
-**1. Clone o repositório:**
-```bash
-git clone [https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git](https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git)
-cd NOME_DO_REPOSITORIO
-
-
-Instale as dependências:
-Bash
-pip install -r requirements.txt
-
-Inicie o servidor web:
-Bash
-python -m uvicorn main:app --reload
-=======
 
